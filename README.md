@@ -1,66 +1,51 @@
-# 🌋 Vulkan Starter App
+# Лабораторная №1 — вариант 3: параллелепипед
 
-## Getting started
+Прямоугольный параллелепипед 2.0 × 1.5 × 1.0 с однотонными цветами граней.
+Реализованы матрицы Model/View/Projection, перспективная и ортографическая
+проекции, проверка глубины и отсечение обратных граней.
 
-You need C++ compiler, Vulkan SDK and CMake installed before you can build this project.
+## Сборка и запуск на macOS
 
-This project uses C++20 standard and thus requires either of those compilers:
-- GCC 10.X
-- Clang 10
-- Microsoft Visual Studio 2019
+Нужны компилятор C++20 (Apple Command Line Tools), CMake 3.20+, Ninja и
+официальный [Vulkan SDK LunarG 1.4.321.0](https://vulkan.lunarg.com/sdk/home#mac)
+с MoltenVK. Установите SDK в `~/VulkanSDK/1.4.321.0`.
+GLFW, ImGui, vk-bootstrap, VulkanMemoryAllocator и GLM загружает CMake;
+для первой конфигурации нужен интернет. Шейдеры компилируются через `glslc`.
 
-This is officially tested on *Windows* and *GNU/Linux platforms*, no *macOS* support yet.
-If you have a working macOS solution of this code, consider submitting a PR so others
-can build this example code without a hassle!
+Из корня проекта:
 
-<ins>**1. Downloading the repository**</ins>
-
-Start by cloning the repository with `git clone --depth 1 https://github.com/vladeemerr/vulkan-starter-app`
-
-This repository does not contain any submodules, it utilizes CMake's `FetchContent` feature instead.
-
-<ins>**2. Configuring the project**</ins>
-
-Run either one of the CMake lines to download dependencies and configure the project:
-
-```bash
-cmake --preset debug       # for GNU/Linux (GCC/Clang)
-cmake --preset msvc-debug  # for Windows (Visual Studio 2019)
-cmake --preset mingw-debug # for Windows (MinGW)
+```sh
+./scripts/build-macos.sh
+./scripts/run-macos.sh
 ```
 
-If you wish to build in `release` mode, change `debug` to `release`.
+Скрипты подключают SDK автоматически. Если рядом с репозиторием есть личный
+`../vulkan-env.sh`, используется он; иначе — `setup-env.sh` из установленного SDK.
+Для другого расположения задайте `CG_VULKAN_ENV` с путём к скрипту окружения.
 
-If changes are made (added/removed files), or if you want to regenerate project files, rerun the command above.
+Можно собрать и без вспомогательных скриптов:
 
-<ins>**3. Building**</ins>
-
-To build the project, use the line below. You are most likely using `debug` preset, so
-the directory that will eventually contain your build files is named `build-debug`.
-
-Likewise for `release` that directory will be named `build-release`
-
-Run one those commands, depending on which preset you chose:
-
-```bash
-cmake --build build-debug --parallel # for debug
-cmake --build build-release --parallel # for release
+```sh
+source "$HOME/VulkanSDK/1.4.321.0/setup-env.sh"
+cmake --preset debug
+cmake --build build-debug --parallel
+./build-debug/vulkan-starter-app
 ```
 
-### Running
+Запускайте из корня проекта: пути к шейдерам относительные.
+Вместо `debug` можно выбрать `release` и каталог `build-release`.
+Проверено на Intel macOS Sequoia 15.8.1 с MoltenVK.
 
-`build-*` directory will contain the executable in one of the subdirectories after successful build.
+## Windows и Linux
 
-For `msvc-{debug|release}` builds output subdirectory is set to `Debug` or `Release` respectively.
-For other configurations output subdirectory is set to `vulkan-starter-app`.
+Сохранены пресеты исходного [Vulkan Starter App](https://github.com/vladeemerr/vulkan-starter-app):
+`debug` для Linux, `msvc-debug` для Visual Studio 2022 и `mingw-debug` для MinGW.
+После настройки Vulkan SDK выполните `cmake --preset <имя пресета>`, затем
+`cmake --build build-debug --parallel`. Для release используйте соответствующий
+release-пресет и `build-release`. Эта лабораторная на Windows/Linux не проверялась.
 
-**Make sure your working directory is set to the project root!**
-Project root is where this README file resides. Otherwise, the
-code responsible for loading shaders or other resources from files will fail,
-because relative paths are used.
+## Управление
 
-### Compiling shaders
-
-`CMakeLists.txt` has a build recipe for compiling shader files
-along with an application. Look for a comment in this file to see
-how to compile your shaders.
+В панели ImGui: Perspective / Orthographic — проекция; Position — положение;
+Rotation — поворот по осям в градусах; Scale — масштаб. Reset возвращает
+исходные преобразования и перспективную проекцию. Размер окна можно менять.

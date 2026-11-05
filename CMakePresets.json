@@ -43,5 +43,15 @@
 			"inherits": "release",
 			"generator": "MinGW Makefiles"
 		}
+	],
+	"buildPresets": [
+		{
+			"name": "debug",
+			"configurePreset": "debug"
+		},
+		{
+			"name": "release",
+			"configurePreset": "release"
+		}
 	]
 }
